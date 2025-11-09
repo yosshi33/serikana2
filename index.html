@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>serikana - 歌詞サイト</title>
+    <link rel="icon" type="image/jpeg" href="image/PXL_20251109_040946794.MP.jpg">
+    <link rel="apple-touch-icon" href="image/PXL_20251109_040946794.MP.jpg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', 'Georgia', serif;
+            background: linear-gradient(135deg, #f5f3f0 0%, #e8dfd5 100%);
+            color: #2c2c2c;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+
+        /* ヘッダー */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #8b7355 0%, #d4a574 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            font-size: 0.95rem;
+            color: #a0947a;
+            letter-spacing: 2px;
+            font-weight: 300;
+        }
+
+        /* ヒーロー画像セクション */
+        .hero-section {
+            width: 100%;
+            max-height: 500px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 3rem;
+            background: #f5f3f0;
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            gap: 0;
+        }
+
+        .hero-image-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            max-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-image-container.left {
+            justify-content: flex-start;
+        }
+
+        .hero-image-container.center {
+            flex: 1.2;
+        }
+
+        .hero-image-container.right {
+            justify-content: flex-end;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+        }
+
+        .hero-image-container.left .hero-image {
+            object-position: center 30%;
+        }
+
+        .hero-image-container.right .hero-image {
+            object-position: center right;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.3));
+        }
+
+        /* メインコンテンツ */
+        main {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        /* イントロセクション */
+        .intro-section {
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+
+        .intro-section h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #5c4a42;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .intro-section p {
+            font-size: 1.1rem;
+            color: #6b6b6b;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+
+        /* 画像ギャラリー */
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            aspect-ratio: 4/3;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+        }
+
+        .gallery-item.face-top img {
+            object-position: center top;
+        }
+
+        .gallery-item.face-center img {
+            object-position: center center;
+        }
+
+        /* 曲のグリッド */
+        .songs-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .song-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .song-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+            border-color: #d4a574;
+        }
+
+        .song-header {
+            background: linear-gradient(135deg, #f5ede3 0%, #e8dfd5 100%);
+            padding: 2rem;
+            border-bottom: 2px solid #f0e8dd;
+        }
+
+        .song-number {
+            font-size: 0.85rem;
+            color: #a0947a;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .song-title {
+            font-size: 1.5rem;
+            color: #5c4a42;
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .song-subtitle {
+            font-size: 0.95rem;
+            color: #8b7d6b;
+            font-weight: 300;
+        }
+
+        .song-content {
+            padding: 2rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .song-card.active .song-content {
+            max-height: 10000px;
+        }
+
+        .lyrics {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 0.95rem;
+            line-height: 2;
+            color: #4a4a4a;
+            font-family: 'Georgia', serif;
+        }
+
+        .expand-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: #f9f7f4;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.9rem;
+            color: #8b7d6b;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .expand-btn:hover {
+            background: #f0e8dd;
+            color: #5c4a42;
+        }
+
+        .expand-icon {
+            display: inline-block;
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .song-card.active .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        /* フッター */
+        footer {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 3rem 1rem;
+            text-align: center;
+            margin-top: 5rem;
+            border-top: 1px solid #e8dfd5;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-title {
+            font-size: 1.5rem;
+            color: #5c4a42;
+            margin-bottom: 1rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .footer-text {
+            color: #8b7d6b;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .footer-link {
+            color: #a0947a;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-link:hover {
+            color: #5c4a42;
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            .hero-section {
+                flex-direction: column;
+                max-height: none;
+            }
+
+            .hero-image-container {
+                width: 100%;
+                height: 300px;
+                flex: none;
+            }
+
+            .hero-image-container.center {
+                flex: none;
+            }
+
+            .intro-section {
+                padding: 2rem;
+            }
+
+            .intro-section h1 {
+                font-size: 1.5rem;
+            }
+
+            .photo-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+
+            .songs-container {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                padding: 1.5rem 1rem;
+            }
+
+            main {
+                margin: 2rem auto;
+            }
+        }
+
+        /* スクロールアニメーション */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .song-card {
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .song-card:nth-child(1) { animation-delay: 0.1s; }
+        .song-card:nth-child(2) { animation-delay: 0.2s; }
+        .song-card:nth-child(3) { animation-delay: 0.3s; }
+        .song-card:nth-child(4) { animation-delay: 0.4s; }
+        .song-card:nth-child(5) { animation-delay: 0.5s; }
+        .song-card:nth-child(6) { animation-delay: 0.6s; }
+        .song-card:nth-child(7) { animation-delay: 0.7s; }
+        .song-card:nth-child(8) { animation-delay: 0.8s; }
+        .song-card:nth-child(9) { animation-delay: 0.9s; }
+        .song-card:nth-child(10) { animation-delay: 1s; }
+        .song-card:nth-child(11) { animation-delay: 1.1s; }
+        .song-card:nth-child(12) { animation-delay: 1.2s; }
+        .song-card:nth-child(13) { animation-delay: 1.3s; }
+        .song-card:nth-child(14) { animation-delay: 1.4s; }
+        .song-card:nth-child(15) { animation-delay: 1.5s; }
+    </style>
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header>
+        <div class="header-content">
+            <div class="logo">serikana</div>
+            <div class="tagline">作詞作曲 ～ 心を紡ぐ歌詞たち</div>
+        </div>
+    </header>
+
+    <!-- ヒーロー画像セクション -->
+    <div class="hero-section">
+        <div class="hero-image-container left">
+            <img src="image/PXL_20251108_111504160.PORTRAIT~2.jpg" alt="serikana" class="hero-image">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-image-container center">
+            <img src="image/PXL_20251109_040946794.MP.jpg" alt="serikana" class="hero-image">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-image-container right">
+            <img src="image/PXL_20251109_041014991.jpg" alt="serikana" class="hero-image">
+            <div class="hero-overlay"></div>
+        </div>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <main>
+        <!-- イントロセクション -->
+        <section class="intro-section">
+            <h1>せりかなの歌詞の世界へ</h1>
+            <p>希望、愛、そして人生の輝きを歌に託して。</p>
+            <p>各曲をクリックすると、心に響く歌詞をご覧いただけます。</p>
+            
+            <!-- 写真ギャラリー -->
+            <div class="photo-gallery">
+                <div class="gallery-item face-top">
+                    <img src="image/PXL_20251109_041026835.jpg" alt="Photo 1">
+                </div>
+                <div class="gallery-item face-top">
+                    <img src="image/PXL_20251109_041042620.jpg" alt="Photo 2">
+                </div>
+                <div class="gallery-item face-top">
+                    <img src="image/PXL_20251109_040939754.MP.jpg" alt="Photo 3">
+                </div>
+                <div class="gallery-item face-center">
+                    <img src="image/MYXJ_20251104223304723_fast.jpg" alt="Photo 4">
+                </div>
+            </div>
+        </section>
+
+        <!-- 曲カード -->
+        <div class="songs-container">
+            <!-- 1. 未来 -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">1</div>
+                    <h2 class="song-title">未来</h2>
+                    <p class="song-subtitle">作詞作曲：せりかな ／ 編曲</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">靴紐ギュッと結び直し　顔を上げたこの瞬間に
+新しい無限の景色　ほら広がる
+
+燻る心を越えて　叶えたい未来の方へ
+きっとその先に全てがあるさ
+
+葛藤も焦燥感も　時として武器になるはずだ　恐れないで行け
+
+答えがない未来が良いさ
+まだ誰も見出したことがない価値があるでしょう？
+色濃く明日を描け
+今というピークを　何度も超えてさ　楽しんだらいい
+
+飛び出して進むほどに　高い壁が立ちはだかり
+でも仲間にも出会えて　越えていける
+
+過去の涙も挫折も　正解にできるような
+未来の足音を　響かせてさ
+
+踏み出す今日が　明日を照らす光なんだ　信じてもいい
+
+見えない未来がいいさ
+自由にそう　誰かが拓いた道に用はない
+運命は創るもんだ
+夢中になれたら　心躍るなら　間違いじゃない
+
+答えのない未来が良いさ
+自分だけが見出せる新しい価値もあるでしょう？
+色濃く明日を描け
+今というピークを　何度も超えてさ　楽しめ
+運命は創るもんだ
+夢中になれたら　心躍るなら　それが答えだ</div>
+                </div>
+            </div>
+
+            <!-- 2. キミと -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">2</div>
+                    <h2 class="song-title">キミと</h2>
+                    <p class="song-subtitle">二人で歩む物語</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">小さな体ひとつで　ずっと戦ってきたんだね
+それでも笑ってると　キミは忘れられないんだね
+
+ねぇ　つらすぎていいから　優しいキミが抱く痛みも
+分けあえるよう　いっぱいにする
+
+ねぇキミと　笑っていられたらいいな
+僕にも何かできることはあるかな
+真っ直ぐな瞳も　無邪気な顔も　僕の心を照らすみたい
+誰かのために　生きられることが　それはキミの力になりたいな
+幸せだってことに　気付けたんだ
+
+体を優しく預けてくれるのが嬉しい
+柔らかい体温に触れて　愛しさ　それが全てなんだ
+
+無防備な寝顔も　僕に見せてくれてありがとう
+
+あぁキミに感じてもらえたらいいな　世界に喜びが溢れていること
+深く深いつながりで　それでも笑って　前を向く姿に励まされる
+その笑顔を守りたいな　僕まで幸せな気持ちになるから
+もう一人じゃない　一緒に歩こうよ
+新しい旅路を　ほら始めよう
+
+ねぇキミと笑っていられたらいいな　僕にも何かできることはあるかな
+真っ直ぐな瞳も　無邪気な顔も　僕の心を照らすみたい
+誰かのために　生きられることが
+幸せだってこと　教えてくれた
+
+その笑顔を守りたいな　僕まで幸せな気持ちになるから
+もう一人じゃない　一緒に歩こうよ
+新しい旅路を　ほら、
+ずっとずっとキミのそばにいるから
+僕ら　手を取り合い　歩いて行こう</div>
+                </div>
+            </div>
+
+            <!-- 3. 星空花火 -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">3</div>
+                    <h2 class="song-title">星空花火</h2>
+                    <p class="song-subtitle">夜空に咲く永遠の想い</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">目覚まし時計が朝を告げる前から　午前５時　僕の鼓動が騒ぎ出す
+村奥山さえまだ眠ってるというのに　今夜の天気気になって
+
+日野川で拾った流木　追いかけた白い球
+打たれたれた夕立　いつも思い出すよ
+
+星たちに届く程　彩って僕らの町
+もっともっと咲かそう　花火達に夢を乗せて
+来年も同じ場所で　また君と見ていたいな
+一年後も　十年後も　百年後も　いつまでも
+we can fly… we can fly… we can fly…
+
+今朝見たニュースの　占いが微妙でも
+１９時　気持ちは月より明るいさ
+
+青空よりもと煌めいて　星空より特別な
+今宵の夜空は　僕らの為にある
+
+星たちも気付く程　高鳴って僕らの音
+もっともっと咲かそう　ほら世界を照らすよう
+来年も同じ場所で　また君と見ていたいな
+一年後も　十年後も　百年後も　いつまでも
+ずっとずっと繋ごう
+
+もうじき川辺に彼岸花が揺れる
+
+もし僕が星になっても　また君と見れるように…
+
+星たちに届く程　彩って僕らの町
+もっともっと咲かそう　花火達に夢を乗せて
+例えば遠く離れたって　空を越え繋いでいくから
+ずっとずっと守ろう　僕らだけの　花火を　ふるさとを　未来を
+we can fly… we can fly… we can fly…</div>
+                </div>
+            </div>
+
+            <!-- 4. 六等星 -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">4</div>
+                    <h2 class="song-title">六等星</h2>
+                    <p class="song-subtitle">暗い夜に光を灯す</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">窓枠から切り取った星空に
+世界を見通したような気分に浸っていた
+もう十分やってきた　疲れ切った
+心に寄り添う君が僕の救いだったのに
+
+全ての夜は明けるって　疑いさえしなかったな
+だけど想いはずっと生きるんでしょう？
+ねぇそうなんでしょう？
+
+いつかこの音色がこの言葉が　枯れ果てて力尽きようと
+暗い夜に　潜む僕を　君は見つけるだろう
+だから　悔いなくも　せめて今日を　燈し続けると誓うよ
+空に溶ける六等星みたいに　優しく包む君みたいに
+
+同じ空見ていたって君なら
+宇宙に無数に意志を見出しただろう
+
+明けない夜もあるならば　星になれたらいいなってさ
+いつかの君にそっと寄り添うように
+
+いつかこの景色がこの世界が　変わり果てる日が迫って
+何者でもない何も生まない　僕に価値はあるかな
+なんて　君に会えて　すべてが溶けて　春に花咲く想いだった
+君が僕にくれた場所呼びずっと　僕なりに照らしていくよ
+
+いつかこの音色がこの言葉が　枯れ果てて力尽きようと
+暗い夜に　潜む僕を　君は見つけるだろう
+だから　悔いなくも　せめて今日を　燈し続けると誓うよ
+強い光も　羨まなく消そう　あの六等星みたいに
+優しく包む君みたいに</div>
+                </div>
+            </div>
+
+            <!-- 5. dry -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">5</div>
+                    <h2 class="song-title">dry</h2>
+                    <p class="song-subtitle">心が渇く季節に</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">雪の降らない街に来て　雪の降らないXmasを知る
+こんな日も晴れ女　カラカラ乾いている
+
+「ひとつ欲しい」って君が　不意に買ってきたポインセチア
+去年の終わり　彩った命
+消耗品みたいに　飾って枯らしたそれがまた
+今年も並び　胸がキュッとなる
+
+街が愛を歌うほどに　露わにされゆく想い
+
+別れの歌を口ずさんで　君に会いに行く聖なる夜
+こんな日も晴れ女　カラカラ乾いている
+雪の降らない街に来て　雪の降らないXmasを知る
+こんな日も晴れ女　星が高鳴っている
+
+あの頃から二人　変わってしまったものだらけ
+すれ違いさえ　見て見ぬ振りで
+
+空が透き通ってくほどに　霞がかっていく未来　ああ
+
+涙も乾く街に来て　涙も出ない別れを知る
+こんな日も晴れ女　カラカラ乾いている
+
+別れの歌を口ずさんで　君に会いに行く聖なる夜
+こんな日も晴れ女　カラカラ乾いている
+雪の降らない街に来て　雪の降らないXmasを知る
+こんな日も晴れ女　星が高鳴っている</div>
+                </div>
+            </div>
+
+            <!-- 6. 優しい手 -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">6</div>
+                    <h2 class="song-title">優しい手</h2>
+                    <p class="song-subtitle">救いはそこにある</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">保証書付きの明日ばっか　求めて僕は目を逸らした
+あなたの想いは知りながら "望んだわけじゃない"
+不安に当たり散らして
+
+それでも逃げ出さない あなたの中に僕は
+明日を見つめていた
+
+繋いでいる 手を 離せはしない あなたはこの世界の
+希望だって ほら 誰かの痛みも嘆く 優しい手が
+僕にとって "唯一"の "救い" だから
+
+ささくれ立つこんな心じゃ 向き合う意味も見失いそうで
+理解しようとしてくれるのも 皮肉に感じて
+そのくせ愛だけ欲して
+
+僕とは違う 楽な生き方もあるだろうに
+一緒に歩む道を 選んでくれた
+
+握っている 手を 離せはしない人だと気付いていて
+希望だって まだ捨てちゃいけないことも
+痛みを知る その優しい手が "救い" なんだ
+
+明日が来るか分からなくたって 伝えたくて
+最後にこの手紙を あなたへ・・・
+
+繋いでいる 手を 離せはしない あなたは
+この世界の 希望だって ほら
+誰かの痛みも嘆く 優しさは あなたは
+
+握っている 手を 離せはしない人だと気付いていて
+希望だって まだ捨てちゃいけないことも
+痛みを知る その優しい手が
+"救い" だって気付いていて</div>
+                </div>
+            </div>
+
+            <!-- 7. エール -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">7</div>
+                    <h2 class="song-title">エール</h2>
+                    <p class="song-subtitle">背中を押す歌</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">この風に乗せて　暗い曇り空　吹き飛ばしていく
+晴れの日ばかりじゃないから　いつもそばに僕らがいる
+
+どんな時も　一緒だから　大丈夫
+
+歌えば　笑顔になる　そんなメロディ　君の元へ
+笑顔誘い　背中を押す　一人じゃない　ずっと想っている
+歌うよ　君のそばで　未来を呼ぶ　希望の歌
+時を越えて　空へ響け　虹の音色　君へと届け
+
+土砂降りの後に　光が差し込み　虹を架けるように
+繋いだその手は　離さないから　ずっと信じていて
+
+一歩進もう　ちゃんと道は　あるから
+
+例えば　挫けそうで　辛い時も　笑えるように
+そばで歌う　僕らがいる　その心を　そっと照らしていく
+歌うよ　顔を上げて　前を向いて　希望の歌
+時を越えて　空へ響け　虹の音色　君へのエール
+
+歌えば　笑顔になる　そんなメロディ　君の元へ
+笑顔誘い　背中を押す　一人じゃない　ずっと想っている
+歌うよ　君のそばで　未来を呼ぶ　希望の歌
+時を越えて　空へ響け　虹の音色　君へと届け
+君の心を照らせ</div>
+                </div>
+            </div>
+
+            <!-- 8. 嘘まで愛して -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">8</div>
+                    <h2 class="song-title">嘘まで愛して</h2>
+                    <p class="song-subtitle">究極の愛の形</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">心配していて　心配させないで
+返事はすぐして　安心させて
+手に負えないほど　ワガママも聞いて
+それでも好きだと　誓いを立てて
+
+１つ　嘘まで愛して　２つ　裏側は覗かないでね
+３つめには　よそ見はやめて
+１人　生きてく強さを　２人　出会って失くしたんだから
+ずっと　そばにいて　きっと　愛しているから
+
+「心が繋がってれば大丈夫」だなんて
+脆い自分を　誤魔化す魔法
+
+嘘まで愛して　２つ　噓には騙されないで
+素直に素顔を見せて
+１人　強がる弱さを　２人　甘える強さにできたら
+ずっと　支えてて　きっと　素直にもなれる
+
+あなたを繋ぎたくて　臆病な自分がいる
+受け止め　揺るがないと示していて
+不器用なんだ　でも愛してんだ
+思いやれば矛盾ばかり
+お望みなら喜んで身を引くわ
+
+嘘♡
+
+１つ　骨まで愛して　２つ　あたし以外愛さないで
+お墓でさえ　あなたといたい
+１人　生きてく強さを　２人　出会って失くしたんだから
+ずっと　そばにいて　きっと　究極の愛ね</div>
+                </div>
+            </div>
+
+            <!-- 9. brave new world -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">9</div>
+                    <h2 class="song-title">brave new world</h2>
+                    <p class="song-subtitle">新しい世界へ踏み出す</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">「常識的に考えて君には無謀だと思うな」
+忠告感謝します　ところでお前は誰だ？
+
+想像できる範囲など　はるか超えて行くつもりです
+だいたいそんな物差しで　僕の進路を計んな
+
+"Boys be ambitious！"という大人達はどうだい？
+四の五の言う前に　背中を見せようぜ
+
+新しい自分に会えるから
+踏み出して　明日は今日を超えて行ける
+信じ抜け　僕らの舞台を　未来を
+新しい風が　ずっと吹き続いている
+
+天才に見える人も　小さな努力を積むという
+折れて腐るくらいなら　曲がって視界を変えよう
+
+"ケ・セラ・セラ"　そうさ　失敗と夜を共にし
+一戦交えた後は　怖いものないさ
+
+始まりは誰もが臆病で
+踏み出して　遥かな希望を見出す
+大丈夫　遅すぎることはないさ
+新しい風が吹けば世界が明けていく
+
+新しい自分に会えるから
+進み行け　限界なんて超えて行ける
+切り拓け　僕らの時代だ　新世界だ
+新しい風は僕が起こしていくんだ</div>
+                </div>
+            </div>
+
+            <!-- 10. Mr. DawnBreaker -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">10</div>
+                    <h2 class="song-title">Mr. DawnBreaker</h2>
+                    <p class="song-subtitle">夜明けを呼ぶ者</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">誤魔化す意味なんてないよね　幸せの形なんてそれぞれ
+一度きりの人生だもん　全部　楽しくなきゃ削り変えちゃお
+
+愛ひとつ握りしめ　それでいいの　それがいいの
+ほら今　wake to a new...
+
+Dawn, Dawn, Dawn, Dawn,
+太陽が昇る夜明けみたく　雲間を裂く光みたく
+君が笑えば　世界も煌めき出すようだ
+偏屈な夜を吹き飛ばして　鼓動のリズムが呼ぶ方へ
+無邪気に　自由に　ふざけちゃえ人生　遠慮なく愛でて行こう
+
+できるだけ前を向かなくちゃ　大切なものも見落としちゃうよね
+巡り合わせがあるなら　きっと　愛が愛を呼ぶのでしょう
+
+優しさを胸に抱いて　それでいいの　それがいいの
+ほら今　take off at...
+
+Dawn, Dawn, Dawn, Dawn,
+滑走路を駆け上がるように　扉開け手招くように
+前へ進めば　世界も解き放つようだ
+偏屈なヤツはゴミに出して　笑って軽く交わして行こう
+君も僕も　一人じゃないから人生　愛し愛されて行こう
+
+Dawn, Dawn, Dawn, Mr. Dawn Breaker...
+
+太陽が昇る夜明けみたく　雲間を裂く光みたく
+君が笑えば　世界も煌めき出すようだ
+偏屈な夜を吹き飛ばして　鼓動のリズムが呼ぶ方へ
+無邪気に　自由に　ふざけちゃえ人生
+遠慮なく愛でて行こう　愛し愛されて行こう</div>
+                </div>
+            </div>
+
+            <!-- 11. 光の方へと -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">11</div>
+                    <h2 class="song-title">光の方へと</h2>
+                    <p class="song-subtitle">希望の道を歩む</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">きっと辿り着く未来に
+ずっと優しく微笑むあなたが立っていて
+いつか形を超えて　新しい距離で心結ばれる日には
+
+あなたがそのままでいられますように
+愛されていること　疑わずに済むように
+足元が崩れても　一人で立てるように
+覚えていて
+
+想いは　時を超えて　存在を超えて
+君をずっと導く光になるから
+いつか温かい手で優しく頬を触れなくなっても
+ずっとそばを離れないと誓うよ
+
+ずっと探していた未来は
+そっとあなたを抱いた目に訪れた
+もっとまぶしくて　きっと答えてくれるよ
+どんなことがあったって守ると示すから
+
+共に過ごす日々が　あなたの強さに
+ここに生まれたことが自信になるように
+胸の中にも光はあると信じられるように
+忘れないで
+
+歩んでいて　光の方へと　優しき方へと
+その旅路を切り拓き乗り切る力は
+全てあなたの中に息づいている
+だから恐れないで
+あなたは一人じゃないって歌うよ
+
+想いは　時を超えて　存在を超えて
+君をずっと導く光になるから
+いつか温かい手で優しく頬を触れなくなっても
+ずっとずっと歩んで
+
+歩んでいて　光の方へと　優しき方へと
+その旅路を切り拓き乗り切る力は
+全てあなたの中に息づいている
+だから恐れないで
+あなたは一人じゃないって歌うよ
+ずっとそばを離れないと誓うよ</div>
+                </div>
+            </div>
+
+            <!-- 12. ねえ未来人 -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">12</div>
+                    <h2 class="song-title">ねえ未来人</h2>
+                    <p class="song-subtitle">時を超えた問い</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">今日も感染者数は過去最高を記録しました。
+料理は相変わらず米と野菜を煮るだけで 上手くなる見込みもない
+不要不急の外出はお控えください。 自粛でなくても外出の予定もなく
+現場で頑張る人には頭が上がらないな
+
+２日間着っぱなしのパジャマ 壊れかけてるPC 積み上がってく封筒
+もうどうしようもだった 今回にしてっけり 大切な人の大切な人は大丈夫かな
+
+何もできないんじゃなくて やろうとしてないだけだって気付いてしまった
+今が最低だと思わないように 歪んだこの世界の跳ね返りに揺らぐ目まで
+
+ねえ未来人 あたしは その目生きているでしょうか ただ一つわかることは
+私が今まで悪態をついた人 傷つけた人は 満悦の私を笑うでしょう
+さざめきある心笑うでしょう
+
+動いてないのにお腹は空くし ベッド脇の定位置 散らかりっぱの書類
+あっち限界 "離したい"って突き放すためのLINE そういう日も君を思うんだ
+
+大切な人はどこへ会えないままで 大気汚染は劇的に改善しました
+優しい歌を喜んで上げたかったのに 正解も不正解もない世界はもっと美しい
+
+ねえ未来人 あたしはその目生きているでしょうか
+あの人の優しさ励ましや 言葉 思いやり 愛を受けたあたしは
+ピンチの時その手を与えられる
+
+ねえ未来人 あたしはこの人生で何を知りたいんでしょうか
+どんな日を知ってるんでしょうか
+ねえねえ未来人 人間は どんな風な未来を生きたいとかを
+選べるって言い切れるな
+
+ねえ未来人 地球はその目生きているでしょうか
+人を恨んじゃいないかな
+あたしが優しくなれたこと 傷つけたかもしれないことも全て
+答えはいずれ目の前に あたしに 大切なあなたに
+返ってくる そうでしょ</div>
+                </div>
+            </div>
+
+            <!-- 13. 風になって -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">13</div>
+                    <h2 class="song-title">風になって</h2>
+                    <p class="song-subtitle">心の寄り添い</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">他人想いの優しい君だからこそ 僕はとても心配です
+君が自分を責めて泣くのも 君らしいと言えばそうだね
+
+風が笑ったら 木の揺れも シダが笑い出して
+木漏れ日よりも 降り注ぐだろう
+
+だから風になって 君の頬をすぐった
+君を笑わせたくて 君の笑顔見たくて
+いつも そばにいるよ  たとえ形はなくたって
+見えるものが全てじゃない だから信じ続けていて
+
+今君に伝えられることがあるなら
+「ありがとう」そう伝えたい
+君が ふっとつけた溜め息も 悩む心すべては
+気流を生んで 僕らしい歌になる
+
+風が笑ったら 小鳥もすぐに 歌い出して
+希望の声が 風になる
+
+だから風になって 君の髪をなでてみた
+君を喜ばせたくて 君の笑顔見たくて
+いつも そばにいるよ  形はなくたって
+絶えず鼓膜を叩いて 背中を押していくから
+
+人の脆さを目の当たりにした時
+人は自らの何を変えられるだろう？
+ただただ 目の前に残された未来を 創る そう前へ
+進むしかないよね そうだろう？
+
+だから 僕は風になって 精一杯笑っていく
+この世のものの全てが いつも笑っていられるように
+そしてこの歌を乗せて 君の元へ届けていくよ
+君が淋しくないように いつも僕は歌ってるから
+
+だから風になって</div>
+                </div>
+            </div>
+
+            <!-- 14. 絆の向こうへ -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">14</div>
+                    <h2 class="song-title">絆の向こうへ</h2>
+                    <p class="song-subtitle">繋がりの力</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">味わい深い時間に　なるかは自分次第だ
+幸せを煮詰めた　人生は素敵だ
+
+君に声をかけなけりゃ　こんな今日もなかったんだ
+世界は　煌めき広がる
+
+Yeah-hey hey!　引き寄せ合っていく　響かせ合っていく
+ほら行こうよ　絆の向こうへ
+Yeah-hey hey!　今始まっていく　君との縁が
+未来を描いて　彩って
+
+どこか懐かしいような　温かな感情だ
+僕が求めていた　ものはここにあった
+
+出会いから希望が　希望から笑顔が
+伝わってくるような　魔法みたいだ
+
+Yeah-hey hey!　手を取り合っていく　高鳴り合っていく
+ほら行こうよ　絆の向こうへ
+Yeah-hey hey!　手繋ぎ寄せている　君との縁が
+未来を繋いで　重なって
+
+Yeah-hey hey!　引き寄せ合っていく　響かせ合っていく
+ほら行こうよ　絆の向こうへ
+Yeah-hey hey!　巡り巡っていく　まだ見ぬ縁も
+未来を照らして　輪になって
+
+Yeah-hey hey!　Yeah-hey hey!
+Yeah-hey hey!　絆の向こうへ…</div>
+                </div>
+            </div>
+
+            <!-- 15. dinosaur -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">15</div>
+                    <h2 class="song-title">dinosaur</h2>
+                    <p class="song-subtitle">進化と挑戦</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">踏み切ってみるんだ　今日より前で…
+僕は温かい帰るべき場所で強くなれる
+
+寂を纏って　頑なに籠っては
+進化という名に換えた安定を　あと世間体を守ってるけど
+未来の自分は　いつか今の僕の化石を見つけて
+ダサいなって　これはないなって　きっと笑うだろう
+
+埋もれてんのは心地いいかい？　それで本当に本望かい？
+遠く想像があったら　目を開けろ　角出して　最前線へ yeah!!
+
+踏み切ってみるんだ　今日より前で
+昨日の答えなんて捨てて　また新たな空を探して跳べる
+手に裂いてやるんだ　今日の未練は
+未会有の明日だって僕は　温かい帰るべき場所で強くなれる
+
+時代を作った先人が掲げ上げて
+踏み固めてくれた大地が　僕らの今日を支えていて
+この楽園の未来は僕らにしかかかってて
+誰かに任せじゃいけないなって　でも怖いなって　やり過ごしてる
+
+響く声を無視すんなよ　疼いた僕の熱いマグマ
+眠ってんだって退屈だろう？　爪を立てて　最高潮へ yeah!!
+
+こらめいているんだよ　暗闇ころがる
+石にはまだなれない僕が　孵化しそうでヒビ割れた殻が
+夢が　逃げ切ってやるんだ
+危険な道だろうが僕は　温かい帰るべき場所で強くなれる
+
+踏み切ってみるんだ　今日より前で
+昨日の答えなんて捨てて　また新たな空を探して跳べる
+手に裂いてやるんだ　今日の未練は
+未会有の明日だって僕は　温かい帰るべき場所で強くなれる
+温かい僕の大地</div>
+                </div>
+            </div>
+
+            <!-- 16. ending -->
+            <div class="song-card">
+                <div class="song-header">
+                    <div class="song-number">16</div>
+                    <h2 class="song-title">ending</h2>
+                    <p class="song-subtitle">新しい始まり</p>
+                </div>
+                <button class="expand-btn" onclick="toggleSong(this)">
+                    歌詞を表示 <span class="expand-icon">▼</span>
+                </button>
+                <div class="song-content">
+                    <div class="lyrics">昨日が枯れ落ちた場所に 今日が咲いている
+君の濡れるモーメント 未来が香る音
+自分だけの人生じゃない 分かってたよね
+誰かの笑顔 それで背中押されてるんだから
+
+弱音を吐けないで 無理に笑う状況も
+君が 綺麗なら 涙も肥やしにできそうだ
+
+エンディングに花咲く日々を描いた そんな花束はドラマチックだ
+君と咲かすストーリー いかようにも彩るさ
+エンディングに少し笑えりゃ僕ら勝利だ
+そして乗り越えた先のエピローグ
+君と笑ってたいんだ 柄じゃないけど 強くなりたい
+
+そっとリビングに飾った湖の絵に
+安らげる心 君が笑う つられて僕も笑う
+今日が訪れたそこに 未来が芽を出すさ
+
+上手くはいかないことだって 明日へ続く旅路
+
+受け入れ進めって 強がって泣く現実も
+僕ら一緒なら 辻褄合うよう育んでいけるさ
+
+エンディングに花咲く日々を描いた そんな花束君に渡すよ
+君と笑う日々が 太陽みたいに照らすよ
+エンディングテーマ曲は僕が歌うよ
+君と生き抜いた今日のセリフさ
+繋いでいく希望を 未来へ歌を 差し出す強さを
+
+エンディングに花咲く日々を描いた そんな花束はドラマチックだ
+君と咲かすストーリー いかようにも彩るさ
+エンディングに少し笑えりゃ僕ら勝利だ
+そして乗り越えた先のエピローグ
+君と笑ってたいんだ 柄じゃないけど 強くなりたい</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- フッター -->
+    <footer>
+        <div class="footer-content">
+            <h2 class="footer-title">serikana</h2>
+            <p class="footer-text">
+                心の奥底から生まれた歌詞。<br>
+                希望、愛、挑戦、そして優しさに満ちた物語。<br>
+                あなたの心に何か一つでも届くことを願っています。
+            </p>
+            <div class="footer-links">
+                <span class="footer-link">© 2025 serikana All Rights Reserved.</span>
+            </div>
+            <p class="footer-text" style="margin-top: 2rem; font-size: 0.85rem;">
+                このサイトは FPplants株式会社 で制作されました。
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleSong(button) {
+            const card = button.closest('.song-card');
+            card.classList.toggle('active');
+        }
+
+        // ページ読み込み時のアニメーション
+        window.addEventListener('load', function() {
+            const cards = document.querySelectorAll('.song-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = (index * 0.1) + 's';
+            });
+        });
+    </script>
+</body>
+</html>
